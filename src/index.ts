@@ -1,20 +1,31 @@
-import { fetchAndStoreData } from './binanceData';
-import { startWebSocketServer } from './websocketServer';
+import { openDb, createTable, fetchHistoricalData, insertOrReplaceData } from './binanceData';
 
-// Parâmetros de exemplo
-const symbol = 'SOLUSDT';
-const interval = '1m';  // Pode ser '1m', '5m', '15m', etc.
-const startTime = new Date('2023-01-01').getTime();  // Data de início
-const endTime = new Date('2023-01-02').getTime();    // Data de fim
-const timeInterval = 1;  // Enviar dados a cada 1 segundo
-
-// Função principal
+// Função principal para realizar o processo e chamar as funções do banco de dados e captura de dados históricos
 async function main() {
-    // Captura os dados históricos e armazena no banco de dados
-    await fetchAndStoreData(symbol, interval, startTime, endTime);
+    try {
+        const db = await openDb();
 
-    // Inicia o servidor WebSocket
-    startWebSocketServer(symbol, interval, timeInterval, startTime, endTime);
+        // Configurações de exemplo
+        const symbol = 'SOLUSDT';  // Moeda escolhida
+        const interval = '1m';     // Intervalo dos dados (1 minuto, 5 minutos, etc)
+        const startTime = Date.parse('2023-10-01T00:00:00Z');  // Data inicial
+        const endTime = Date.parse('2024-01-01T00:00:00Z');    // Data final
+
+        // Criação da tabela, se necessário
+        await createTable(db, symbol, interval);
+
+        // Captura dos dados históricos da Binance
+        const historicalData = await fetchHistoricalData(symbol, interval, startTime, endTime);
+
+        // Inserir ou substituir os dados capturados no banco de dados
+        await insertOrReplaceData(db, symbol, interval, historicalData);
+
+        console.log(`Dados para ${symbol} no intervalo ${interval} inseridos ou substituídos com sucesso.`);
+
+    } catch (error) {
+        console.error('Erro ao executar o script:', error);
+    }
 }
 
+// Chamar a função principal para executar o fluxo completo
 main();
