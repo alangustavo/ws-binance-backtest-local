@@ -1,0 +1,25 @@
+{
+  "name": "ws-binance-backtest-local",
+  "version": "1.0.0",
+  "description": "This project provides a WebSocket service that simulates Binance's WebSocket behavior using historical data. It's designed to be a robust platform for testing algorithms and automated trading strategies with trading bots.",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.5",
+    "@types/sqlite3": "^3.1.11",
+    "@types/ws": "^8.5.12",
+    "typescript": "^5.6.2"
+  }
+}
